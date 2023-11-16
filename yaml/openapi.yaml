@@ -12,9 +12,9 @@ info:
   version: 1.0.11
 externalDocs:
   description: Swagger
-  url: https://gis-fahad.github.io
+  url: https://gis-fahad.github.io/swagger/
 servers:
-  - url: https://us-central1-noted-slice-401902.cloudfunctions.net
+  - url: https://us-central1-fahad-402509.cloudfunctions.net
 tags:
   - name: auth
     description: Authentikasi
