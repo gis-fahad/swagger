@@ -32,7 +32,7 @@ tags:
       description: Deskripsi dan Kode Program
       url: https://pkg.go.dev/github.com/gis-fahad/gcfgeobackend
 paths:
-  /Register-Gis:
+  /gis-regis:
     post:
       tags:
         - register
@@ -53,7 +53,7 @@ paths:
                 $ref: "#/components/schemas/Response"
         "405":
           description: Invalid input
-  /Login-Gis:
+  /hadlogingis:
     post:
       tags:
         - auth
