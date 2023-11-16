@@ -1,54 +1,62 @@
 openapi: 3.0.3
 info:
-  title: Dokumen API Cloud Function Pasabar - OpenAPI 3.0
+  title: Dokumen API Cloud Function GIS- OpenAPI 3.0
   description: >-
-    Dokumen API Cloud Function Aplikasi Pariwisata Jawa Barat
-  termsOfService: https://github.com/pasabar/docs
+    Dokumentasi API untuk Matakuliah GIS
+  termsOfService: https://github.com/gis-fahad
   contact:
-    email: ryaasishlah123@gmail.com
+    email: fahadra96@gmail.com
   license:
-    name: pasetobackendpasabar
-    url: https://pkg.go.dev/github.com/pasabar/pasetobackendpasabar
-  version: 1.0.1
+    name: GCF Package
+    url: https://pkg.go.dev/github.com/gis-fahad/gcfgeobackend
+  version: 1.0.11
 externalDocs:
-  description: Repo backend
-  url: https://pasabar.github.io/pasetobackendpasabar/
+  description: Swagger
+  url: https://gis-fahad.github.io
 servers:
-  - url: https://us-central1-pasabar.cloudfunctions.net/pasabar
+  - url: https://us-central1-noted-slice-401902.cloudfunctions.net
 tags:
-  - name: User
-    description: Data User
+  - name: auth
+    description: Authentikasi
     externalDocs:
       description: Deskripsi dan Kode Program
-      url: https://pasabar.github.io/pasetobackendpasabar/
-  - name: Auth
-    description: Auth to Access to API
+      url: https://pkg.go.dev/github.com/gis-fahad/gcfgeobackend
+  - name: register
+    description: Register Account
     externalDocs:
       description: Deskripsi dan Kode Program
-      url: https://pasabar.github.io/pasetobackendpasabar/
+      url: https://pkg.go.dev/github.com/gis-fahad/gcfgeobackend
+  - name: data
+    description: Data Untuk akses GIS
+    externalDocs:
+      description: Deskripsi dan Kode Program
+      url: https://pkg.go.dev/github.com/gis-fahad/gcfgeobackend
 paths:
-  user:
-    get:
+  /Register-Gis:
+    post:
       tags:
-        - User
-      summary: Get userpasabar
-      description: List Data User
-      operationId: getUserJSON
+        - register
+      summary: Register User Without Token
+      description: Daftar Akun User
+      operationId: authService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
       responses:
         "200":
           description: successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
-        "400":
-          description: Invalid status value
-  login:
+                $ref: "#/components/schemas/Response"
+        "405":
+          description: Invalid input
+  /Login-Gis:
     post:
       tags:
-        - Auth
+        - auth
       summary: Login get Token
       description: Login and Get User Token
       operationId: authService
@@ -56,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Login"
+              $ref: "#/components/schemas/Auth"
       responses:
         "200":
           description: successful operation
@@ -66,34 +74,67 @@ paths:
                 $ref: "#/components/schemas/AuthResponse"
         "405":
           description: Invalid input
+  /update-geo:
+    put:
+      tags:
+        - data
+      summary: Update data geo
+      description: Update data nama by volume geo
+      operationId: authService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/bodycord"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+        "405":
+          description: Invalid input
       security:
-        - token:
+        - Login:
             - write:apiKey
             - read:apiKey
+
+  /getall-geojson:
+    get:
+      tags:
+        - data
+      summary: Get Data Geojson
+      description: Header auth
+      operationId: GetdataGeojson
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/responseUser"
+        "400":
+          description: Invalid status value
+      security:
+        - Login:
+            - write:apiKey
+            - read:apiKey
+
 components:
   schemas:
-    User:
-      type: object
-      properties:
-        _id:
-          type: string
-          example: pasabarcoba
-        email:
-          type: string
-          example: pasabar@gmail.com
-        role:
-          type: string
-          example: admin
-    Login:
+    user:
       type: object
       properties:
         username:
           type: string
-          example: pasabarcoba
+          example: fahadwell
         password:
           type: string
-          example: pasabardotcom
-    AuthResponse:
+          example: fahad
+    Response:
       type: object
       properties:
         status:
@@ -101,17 +142,68 @@ components:
           example: true
         message:
           type: string
-          example: selamat datang
+          example: Berhasil Input data
+    responseUser:
+      type: object
+      properties:
+        status:
+          type: bool
+          example: true
+        message:
+          type: string
+          example: berhasil ambil data
+        data:
+          type: object
+          properties:
+            username:
+              type: string
+              example: fahadwell
+            password:
+              type: string
+              example: hashed password
+            role:
+              type: string
+              example: user
+    Auth:
+      type: object
+      properties:
+        username:
+          type: string
+          example: fahadwell
+        password:
+          type: string
+          example: fahad
+    bodycord:
+      type: object
+      properties:
+        type:
+          type: string
+          example: polygon
+        name:
+          type: string
+          example: fahadwell
+        volume:
+          type: string
+          example: "1"
+    AuthResponse:
+      type: object
+      properties:
+        status:
+          type: bool
+          example: false
+        message:
+          type: string
+          example: Selamat Datang
         token:
           type: string
-          example: token
+          example: fahadwell
   requestBodies:
     AuthReq:
       description: Request Authentication
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Login"
+            $ref: "#/components/schemas/Auth"
     UserArray:
       description: List of user object
       content:
@@ -121,7 +213,7 @@ components:
             items:
               $ref: "#/components/schemas/AuthResponse"
   securitySchemes:
-    token:
+    Login:
       type: apiKey
-      name: token
+      name: Login
       in: header
